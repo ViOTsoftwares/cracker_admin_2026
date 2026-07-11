@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
 import { DeleteBannerApi, GetBannerApi } from "@/Api/banner";
+import { getImageUrl } from "@/lib/imageHelper";
 
 export default function BannerList() {
   const tableRef = useRef<{ reload: () => void }>(null);
@@ -31,7 +32,7 @@ export default function BannerList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={val}
+              src={getImageUrl(val)}
               alt="Desktop Banner"
               className="h-10 w-20 rounded border bg-gray-50 object-cover animate-fade-in"
             />
@@ -48,7 +49,7 @@ export default function BannerList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={val}
+              src={getImageUrl(val)}
               alt="Mobile Banner"
               className="h-10 w-10 rounded border bg-gray-50 object-cover animate-fade-in"
             />

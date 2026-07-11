@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { handleLogout } from "@/lib/adminFun";
+import { getImageUrl } from "@/lib/imageHelper";
 import { useAppSelector } from "@/store/hooks";
 import { ChevronDown, LogOut, KeyRound, User } from "lucide-react";
 
@@ -44,7 +45,7 @@ export default function ProfileMenu() {
       >
         {/* Avatar */}
         <img
-          src={user?.profileImage || "/default-avatar.svg"}
+          src={getImageUrl(user?.profileImage)}
           alt={username}
           className="w-8 h-8 rounded-full object-cover shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200"
         />

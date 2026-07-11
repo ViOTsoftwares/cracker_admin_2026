@@ -6,6 +6,7 @@ import { setUser } from "@/store/authSlice";
 import { UpdateProfileApi } from "@/Api/admin";
 import { toastMessage } from "@/lib/toast.message";
 import CardContainer from "@/components/CardContainer";
+import { getImageUrl } from "@/lib/imageHelper";
 import { User, Mail, Phone, Shield, Camera } from "lucide-react";
 
 export default function ProfilePage() {
@@ -33,7 +34,7 @@ export default function ProfilePage() {
         phone: user.phone || "",
         role: user.role || "",
       });
-      setPreviewUrl(user.profileImage || "/default-avatar.svg");
+      setPreviewUrl(getImageUrl(user.profileImage));
     }
   }, [user]);
 

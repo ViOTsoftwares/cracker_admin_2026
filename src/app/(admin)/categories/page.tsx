@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
 import { DeleteCategoryApi, GetCategoryApi } from "@/Api/category";
+import { getImageUrl } from "@/lib/imageHelper";
 
 export default function CategoryList() {
   const tableRef = useRef<{ reload: () => void }>(null);
@@ -28,7 +29,7 @@ export default function CategoryList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={val}
+              src={getImageUrl(val)}
               alt="Category"
               className="h-10 w-10 rounded-lg object-cover border bg-gray-50"
             />

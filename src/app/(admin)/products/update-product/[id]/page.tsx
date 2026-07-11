@@ -10,6 +10,7 @@ import { toastMessage } from "@/lib/toast.message";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Trash } from "lucide-react";
 import CardContainer from "@/components/CardContainer";
+import { getImageUrl } from "@/lib/imageHelper";
 
 const UpdatePage = () => {
   const [formValues, setFormValues] = useState({
@@ -393,7 +394,7 @@ const UpdatePage = () => {
                 {existingImages.map((url, idx) => (
                   <div key={idx} className="relative border rounded-lg overflow-hidden bg-gray-50 h-24">
                     <img
-                      src={url}
+                      src={getImageUrl(url)}
                       alt={`Existing Product ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -436,7 +437,7 @@ const UpdatePage = () => {
                 {newPreviews.map((url, idx) => (
                   <div key={idx} className="relative border rounded-lg overflow-hidden bg-gray-50 h-24">
                     <img
-                      src={url}
+                      src={getImageUrl(url)}
                       alt={`New Preview ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />

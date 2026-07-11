@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
 import { DeleteProductApi, GetProductApi } from "@/Api/product";
+import { getImageUrl } from "@/lib/imageHelper";
 
 export default function List() {
   const tableRef = useRef<{ reload: () => void }>(null);
@@ -28,7 +29,7 @@ export default function List() {
           const primaryImg = imgs[0] || "";
           return primaryImg ? (
             <img
-              src={primaryImg}
+              src={getImageUrl(primaryImg)}
               alt="Product"
               className="h-10 w-10 rounded-lg object-cover border bg-gray-50"
             />

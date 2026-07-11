@@ -10,6 +10,7 @@ import { ArrowLeft, Trash } from "lucide-react";
 import { CreateProductApi } from "@/Api/product";
 import { GetCategoryApi, CreateCategoryApi } from "@/Api/category";
 import CardContainer from "@/components/CardContainer";
+import { getImageUrl } from "@/lib/imageHelper";
 
 const AddPage = () => {
   const [formValues, setFormValues] = useState({
@@ -371,7 +372,7 @@ const AddPage = () => {
                 {imagePreviews.map((url, idx) => (
                   <div key={idx} className="relative group border rounded-lg overflow-hidden bg-gray-50 h-24">
                     <img
-                      src={url}
+                      src={getImageUrl(url)}
                       alt={`Preview ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />

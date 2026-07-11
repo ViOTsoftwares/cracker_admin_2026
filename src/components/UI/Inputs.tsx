@@ -1,4 +1,5 @@
 import React from "react";
+import { getImageUrl } from "@/lib/imageHelper";
 
 export const InputField = ({
   label,
@@ -84,7 +85,7 @@ export const FileField = ({
     {preview && (
       <div className="flex items-center gap-4">
         <img
-          src={preview}
+          src={getImageUrl(preview)}
           alt="Logo preview"
           className="h-16 w-16 rounded-lg border object-contain bg-gray-50"
         />
