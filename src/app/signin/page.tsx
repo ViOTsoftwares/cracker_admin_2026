@@ -53,6 +53,7 @@ export default function SignIn() {
       if (response.success) {
         toastMessage(response.message, "success");
         localStorage.setItem("adminToken", response.token);
+        document.cookie = `adminToken=${response.token}; path=/; max-age=${60 * 60 * 24};`;
         try {
           const me = await GetMeApi();
           if (me?.success) {
