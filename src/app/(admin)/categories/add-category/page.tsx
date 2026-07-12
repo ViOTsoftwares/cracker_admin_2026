@@ -157,6 +157,7 @@ const AddCategoryPage = () => {
           <FileField
             label="Category Image"
             preview={imagePreview}
+            folder="categories"
             error={errors.image}
             onChange={handleImageChange}
           />

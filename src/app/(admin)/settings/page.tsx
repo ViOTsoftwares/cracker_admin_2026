@@ -199,6 +199,7 @@ const SettingsPage = () => {
         <FileField
           label="Company Logo"
           preview={logoPreview}
+          folder="logos"
           error={errors.logo}
           onChange={handleLogoChange}
         />

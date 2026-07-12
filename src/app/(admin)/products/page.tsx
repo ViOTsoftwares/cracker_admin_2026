@@ -29,7 +29,7 @@ export default function List() {
           const primaryImg = imgs[0] || "";
           return primaryImg ? (
             <img
-              src={getImageUrl(primaryImg)}
+              src={getImageUrl(primaryImg, "products")}
               alt="Product"
               className="h-10 w-10 rounded-lg object-cover border bg-gray-50"
             />

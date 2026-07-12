@@ -394,7 +394,7 @@ const UpdatePage = () => {
                 {existingImages.map((url, idx) => (
                   <div key={idx} className="relative border rounded-lg overflow-hidden bg-gray-50 h-24">
                     <img
-                      src={getImageUrl(url)}
+                      src={getImageUrl(url, "products")}
                       alt={`Existing Product ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />

@@ -1,6 +1,6 @@
 import { ENV } from "@/config/env";
 
-export const getImageUrl = (imagePath?: string, fallback: string = "/default-avatar.svg") => {
+export const getImageUrl = (imagePath?: string, folder?: string, fallback: string = "/default-avatar.svg") => {
   if (!imagePath) return fallback;
 
   // Handle case where backend returned "undefined/profiles/..." due to missing IMAGE_URL env var on backend
@@ -9,7 +9,7 @@ export const getImageUrl = (imagePath?: string, fallback: string = "/default-ava
   }
 
   // Handle blob preview URLs
-  if (imagePath.startsWith("blob:")) {
+  if (imagePath.startsWith("blob:") || imagePath.startsWith("data:")) {
     return imagePath;
   }
 
@@ -30,6 +30,10 @@ export const getImageUrl = (imagePath?: string, fallback: string = "/default-ava
   // If it starts with /
   if (imagePath.startsWith("/")) {
     return `${ENV.IMAGE_URL}${imagePath}`;
+  }
+
+  if (folder) {
+    return `${ENV.IMAGE_URL}/${folder}/${imagePath}`;
   }
 
   return `${ENV.IMAGE_URL}/${imagePath}`;

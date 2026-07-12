@@ -29,7 +29,7 @@ export default function CategoryList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={getImageUrl(val)}
+              src={getImageUrl(val, "categories")}
               alt="Category"
               className="h-10 w-10 rounded-lg object-cover border bg-gray-50"
             />

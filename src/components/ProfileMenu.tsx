@@ -45,7 +45,7 @@ export default function ProfileMenu() {
       >
         {/* Avatar */}
         <img
-          src={getImageUrl(user?.profileImage)}
+          src={getImageUrl(user?.profileImage, "profiles")}
           alt={username}
           className="w-8 h-8 rounded-full object-cover shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200"
         />

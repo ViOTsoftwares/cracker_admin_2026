@@ -158,6 +158,7 @@ const UpdatePage = () => {
           <FileField
             label="Logo"
             preview={imagePreview}
+            folder="logos"
             error={errors.image}
             onChange={handleImageChange}
           />

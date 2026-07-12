@@ -207,6 +207,7 @@ const UpdateBannerPage = () => {
             <FileField
               label="Desktop Banner Image (Recommended: 1920x600)"
               preview={desktopPreview}
+              folder="banners"
               error={errors.desktopImage}
               onChange={handleDesktopImageChange}
             />
@@ -214,6 +215,7 @@ const UpdateBannerPage = () => {
             <FileField
               label="Mobile Banner Image (Recommended: 600x600 or 750x1000)"
               preview={mobilePreview}
+              folder="banners"
               error={errors.mobileImage}
               onChange={handleMobileImageChange}
             />

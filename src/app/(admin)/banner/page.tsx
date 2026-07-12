@@ -32,7 +32,7 @@ export default function BannerList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={getImageUrl(val)}
+              src={getImageUrl(val, "banners")}
               alt="Desktop Banner"
               className="h-10 w-20 rounded border bg-gray-50 object-cover animate-fade-in"
             />
@@ -49,7 +49,7 @@ export default function BannerList() {
           const val = info.getValue<string>();
           return val ? (
             <img
-              src={getImageUrl(val)}
+              src={getImageUrl(val, "banners")}
               alt="Mobile Banner"
               className="h-10 w-10 rounded border bg-gray-50 object-cover animate-fade-in"
             />

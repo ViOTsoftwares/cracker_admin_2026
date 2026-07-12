@@ -63,11 +63,13 @@ export const FileField = ({
   label,
   error,
   preview,
+  folder,
   onChange,
 }: {
   label: string;
   error?: string;
   preview?: string | null;
+  folder?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }) => (
   <div className="space-y-2">
@@ -85,7 +87,7 @@ export const FileField = ({
     {preview && (
       <div className="flex items-center gap-4">
         <img
-          src={getImageUrl(preview)}
+          src={getImageUrl(preview, folder)}
           alt="Logo preview"
           className="h-16 w-16 rounded-lg border object-contain bg-gray-50"
         />

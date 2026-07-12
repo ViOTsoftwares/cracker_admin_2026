@@ -34,7 +34,7 @@ export default function ProfilePage() {
         phone: user.phone || "",
         role: user.role || "",
       });
-      setPreviewUrl(getImageUrl(user.profileImage));
+      setPreviewUrl(getImageUrl(user.profileImage, "profiles"));
     }
   }, [user]);
 
