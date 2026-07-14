@@ -18,8 +18,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import Pagination from "rc-pagination";
-import ReactDatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 import "../../../node_modules/rc-pagination/assets/index.css";
 
 import { useDebounce } from "./useDebounce";
@@ -180,18 +178,16 @@ function ServerSideTableInner<T extends object>(
 
                     {/* DATE */}
                     {meta.filterType === "date" && (
-                      <ReactDatePicker
-                        selected={
-                          filterInputs[key] ? new Date(filterInputs[key]) : null
-                        }
-                        onChange={(date: any) =>
+                      <input
+                        type="date"
+                        value={filterInputs[key] ?? ""}
+                        onChange={(e) =>
                           setFilterInputs((p) => ({
                             ...p,
-                            [key]: date ? date.toISOString().slice(0, 10) : "",
+                            [key]: e.target.value,
                           }))
                         }
-                        dateFormat="yyyy-MM-dd"
-                        className="h-10 w-full rounded-lg border px-3 text-sm"
+                        className="h-10 w-full rounded-lg border px-3 text-sm border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                       />
                     )}
 

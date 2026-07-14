@@ -4,6 +4,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { usePathname, useRouter } from "next/navigation";
 
+import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
 import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
@@ -58,7 +59,7 @@ export default function List() {
     "
               title="Edit"
             >
-              ✏️
+              <Edit size={16} />
             </button>
             )}
 
@@ -83,7 +84,7 @@ export default function List() {
     "
               title="Delete"
             >
-              🗑️
+              <Trash2 size={16} />
             </button>
             )}
           </div>

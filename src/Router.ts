@@ -22,6 +22,11 @@ export const menuList: Menu[] = [
     icon: "ShoppingBag",
   },
   {
+    label: "Orders",
+    path: "/orders",
+    icon: "ClipboardList",
+  },
+  {
     label: "Projects",
     icon: "Briefcase",
     subMenu: [

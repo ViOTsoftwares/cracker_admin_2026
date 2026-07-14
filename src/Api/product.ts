@@ -75,3 +75,33 @@ export const OneProductApi = async (id: any) => {
     };
   }
 };
+
+export const ExportProductsApi = async () => {
+  try {
+    const { data } = await baseApi.get("/product/export-all", {
+      withCredentials: true,
+    });
+    return data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Export failed",
+      errors: error?.response?.data?.errors || {},
+    };
+  }
+};
+
+export const ImportProductsApi = async (payload: { products: any[] }) => {
+  try {
+    const { data } = await baseApi.post("/product/import", payload, {
+      withCredentials: true,
+    });
+    return data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Import failed",
+      errors: error?.response?.data?.errors || {},
+    };
+  }
+};

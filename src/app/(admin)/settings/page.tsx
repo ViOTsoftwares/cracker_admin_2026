@@ -25,6 +25,7 @@ const SettingsPage = () => {
     xlink: "",
     instagramlink: "",
     facebooklink: "",
+    deliveryFee: 0,
     logo: null as File | null,
   });
   const {
@@ -40,6 +41,7 @@ const SettingsPage = () => {
     xlink,
     instagramlink,
     facebooklink,
+    deliveryFee,
   } = formValues;
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -105,6 +107,7 @@ const SettingsPage = () => {
       fs.append("xlink", xlink);
       fs.append("instagramlink", instagramlink);
       fs.append("facebooklink", facebooklink);
+      fs.append("deliveryFee", String(deliveryFee || 0));
       if (logo instanceof File) {
         fs.append("logo", logo);
       }
@@ -186,6 +189,14 @@ const SettingsPage = () => {
             value={email}
             onChange={handleChange}
             error={errors.email}
+          />
+          <InputField
+            label="Delivery Fee (₹)"
+            name="deliveryFee"
+            type="number"
+            value={deliveryFee !== undefined ? String(deliveryFee) : ""}
+            onChange={handleChange}
+            error={errors.deliveryFee}
           />
         </div>
         <TextareaField

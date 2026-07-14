@@ -12,6 +12,7 @@ interface SettingsPayload {
   xlink?: string;
   instagramlink?: string;
   facebooklink?: string;
+  deliveryFee?: number | string;
 }
 
  type ValidationErrors = Partial<

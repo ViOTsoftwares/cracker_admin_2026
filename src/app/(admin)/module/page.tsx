@@ -1,9 +1,8 @@
-﻿"use client";
+"use client";
 import React, { useMemo, useRef, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { usePathname, useRouter } from "next/navigation";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
 import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
@@ -75,7 +74,7 @@ export default function List() {
     "
               title="Edit"
             >
-              <EditOutlinedIcon fontSize="small" />
+              <Edit size={16} />
             </button>
             )}
 
@@ -100,7 +99,7 @@ export default function List() {
     "
               title="Delete"
             >
-              <DeleteOutlineOutlinedIcon fontSize="small" />
+              <Trash2 size={16} />
             </button>
             )}
           </div>

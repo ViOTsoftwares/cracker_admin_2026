@@ -4,6 +4,7 @@ import React, { useMemo, useRef } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 
+import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
 import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
@@ -105,7 +106,7 @@ export default function BannerList() {
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 transition hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 title="Edit"
               >
-                ✏️
+                <Edit size={16} />
               </button>
             )}
 
@@ -118,7 +119,7 @@ export default function BannerList() {
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-red-600 text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                 title="Delete"
               >
-                🗑️
+                <Trash2 size={16} />
               </button>
             )}
           </div>
