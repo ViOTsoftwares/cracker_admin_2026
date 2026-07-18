@@ -7,12 +7,97 @@ import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
-import { GetOrdersApi, UpdateOrderStatusApi } from "@/Api/order";
-import { Edit } from "lucide-react";
+import { GetOrdersApi, UpdateOrderStatusApi, ExportOrdersApi } from "@/Api/order";
+import { Edit, Download } from "lucide-react";
 
 export default function OrderList() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<{ reload: () => void; getFilters: () => Record<string, any> }>(null);
   const permission = usePermission("Orders");
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const currentFilters = tableRef.current?.getFilters ? tableRef.current.getFilters() : {};
+      const res = await ExportOrdersApi(currentFilters);
+      if (!res.success) {
+        toastMessage(res.message || "Failed to export orders", "error");
+        return;
+      }
+
+      const orders = res.result || [];
+      if (orders.length === 0) {
+        toastMessage("No orders found to export", "info");
+        return;
+      }
+
+      const headers = [
+        "Order ID",
+        "Date",
+        "Customer Name",
+        "Customer Email",
+        "Customer Phone",
+        "City",
+        "Total Amount",
+        "Payment Method",
+        "Payment Status",
+        "Order Status",
+        "Items",
+      ];
+
+      const escapeCSV = (val: any) => {
+        if (val === null || val === undefined) return "";
+        let str = String(val);
+        if (str.includes(",") || str.includes('"') || str.includes("\n") || str.includes("\r")) {
+          str = str.replace(/"/g, '""');
+          return `"${str}"`;
+        }
+        return str;
+      };
+
+      const csvRows = [headers.join(",")];
+      for (const o of orders) {
+        const u = o.user || {};
+        const itemsStr = (o.items || [])
+          .map((i: any) => `${i.product?.name || "Unknown"} x${i.quantity}`)
+          .join(" | ");
+
+        const dateStr = o.createdAt
+          ? new Date(o.createdAt).toLocaleString("en-IN")
+          : "";
+
+        const row = [
+          escapeCSV(o.orderId),
+          escapeCSV(dateStr),
+          escapeCSV(u.name || "Guest"),
+          escapeCSV(u.email || ""),
+          escapeCSV(o.shippingAddress?.phone || u.phone || ""),
+          escapeCSV(o.shippingAddress?.city || ""),
+          o.total || 0,
+          escapeCSV(o.paymentMethod || ""),
+          escapeCSV(o.paymentStatus || ""),
+          escapeCSV(o.orderStatus || ""),
+          escapeCSV(itemsStr),
+        ];
+        csvRows.push(row.join(","));
+      }
+
+      const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `orders_export_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toastMessage("Orders exported successfully", "success");
+    } catch (err) {
+      console.error(err);
+      toastMessage("Something went wrong during export", "error");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleEditStatus = async (order: any) => {
     if (!permission.edit) {
@@ -265,6 +350,30 @@ export default function OrderList() {
           <p className="text-sm text-gray-500 mt-1">
             Track customer orders and manage payment/delivery statuses
           </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            disabled={isExporting}
+            className="
+              inline-flex items-center gap-2
+              rounded-xl
+              border border-gray-300
+              bg-white px-5 py-3
+              text-sm font-semibold text-gray-700
+              shadow-sm
+              transition-all duration-200
+              hover:bg-gray-50
+              hover:text-gray-900
+              active:scale-95
+              disabled:opacity-50
+              focus:outline-none focus:ring-2 focus:ring-[#0f172a] focus:ring-offset-2
+            "
+          >
+            <Download size={16} className="text-gray-500" />
+            <span>{isExporting ? "Exporting..." : "Export CSV"}</span>
+          </button>
         </div>
       </div>
 

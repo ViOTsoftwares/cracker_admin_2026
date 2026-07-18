@@ -5,6 +5,7 @@ import {
   FileField,
   InputField,
   TextareaField,
+  SelectField,
 } from "@/components/UI/Inputs";
 import { validation } from "./validate";
 import { isEmpty } from "@/lib/isEmpty";
@@ -26,6 +27,7 @@ const SettingsPage = () => {
     instagramlink: "",
     facebooklink: "",
     deliveryFee: 0,
+    deliveryFeeType: "free",
     logo: null as File | null,
   });
   const {
@@ -42,6 +44,7 @@ const SettingsPage = () => {
     instagramlink,
     facebooklink,
     deliveryFee,
+    deliveryFeeType,
   } = formValues;
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,7 +64,7 @@ const SettingsPage = () => {
   }, [logoPreview]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormValues((pre) => ({ ...pre, [name]: value }));
@@ -108,6 +111,7 @@ const SettingsPage = () => {
       fs.append("instagramlink", instagramlink);
       fs.append("facebooklink", facebooklink);
       fs.append("deliveryFee", String(deliveryFee || 0));
+      fs.append("deliveryFeeType", deliveryFeeType);
       if (logo instanceof File) {
         fs.append("logo", logo);
       }
@@ -190,14 +194,27 @@ const SettingsPage = () => {
             onChange={handleChange}
             error={errors.email}
           />
-          <InputField
-            label="Delivery Fee (₹)"
-            name="deliveryFee"
-            type="number"
-            value={deliveryFee !== undefined ? String(deliveryFee) : ""}
+          <SelectField
+            label="Delivery Fee Type"
+            name="deliveryFeeType"
+            value={deliveryFeeType}
             onChange={handleChange}
-            error={errors.deliveryFee}
+            options={[
+              { label: "Free Delivery", value: "free" },
+              { label: "Fixed Amount", value: "fixed" },
+              { label: "Percentage", value: "percentage" },
+            ]}
           />
+          {deliveryFeeType !== "free" && (
+            <InputField
+              label={deliveryFeeType === "percentage" ? "Delivery Fee (%)" : "Delivery Fee (₹)"}
+              name="deliveryFee"
+              type="number"
+              value={deliveryFee !== undefined ? String(deliveryFee) : ""}
+              onChange={handleChange}
+              error={errors.deliveryFee}
+            />
+          )}
         </div>
         <TextareaField
           label="Address"

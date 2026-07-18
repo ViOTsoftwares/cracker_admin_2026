@@ -16,6 +16,22 @@ export const GetOrdersApi = async (params: any) => {
   }
 };
 
+export const ExportOrdersApi = async (filter: any = {}) => {
+  try {
+    const { data } = await baseApi.get("/orders/export-all", {
+      params: { filter },
+      withCredentials: true,
+    });
+    return data;
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.response?.data?.message || "Failed to export orders",
+      errors: error?.response?.data?.errors || {},
+    };
+  }
+};
+
 export const UpdateOrderStatusApi = async (id: string, payload: { orderStatus?: string; paymentStatus?: string }) => {
   try {
     const { data } = await baseApi.put(`/orders/${id}/status`, payload, {

@@ -48,6 +48,7 @@ interface ServerSideTableProps<T extends object> {
 
 export interface ServerSideTableRef {
   reload: () => void;
+  getFilters: () => Record<string, any>;
 }
 
 /* ===================== COMPONENT ===================== */
@@ -60,8 +61,33 @@ function ServerSideTableInner<T extends object>(
   const [loading, setLoading] = useState(false);
 
   const [filterInputs, setFilterInputs] = useState<Record<string, any>>({});
-  const [pageIndex, setPageIndex] = useState(0);
-  const pageSize = 5;
+  
+  const [pageIndex, setPageIndex] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const page = params.get("page");
+      return page ? parseInt(page, 10) : 0;
+    }
+    return 0;
+  });
+
+  const [pageSize, setPageSize] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const limit = params.get("limit");
+      return limit ? parseInt(limit, 10) : 5;
+    }
+    return 5;
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("page", pageIndex.toString());
+      url.searchParams.set("limit", pageSize.toString());
+      window.history.replaceState(null, "", url.toString());
+    }
+  }, [pageIndex, pageSize]);
 
   const debouncedFilters = useDebounce(filterInputs, 500);
 
@@ -102,7 +128,10 @@ function ServerSideTableInner<T extends object>(
     }
   }, [fetchApi, pageIndex, pageSize, formattedFilters]);
 
-  useImperativeHandle(ref, () => ({ reload: loadData }), [loadData]);
+  useImperativeHandle(ref, () => ({ 
+    reload: loadData,
+    getFilters: () => formattedFilters
+  }), [loadData, formattedFilters]);
 
   useEffect(() => {
     loadData();
@@ -252,16 +281,35 @@ function ServerSideTableInner<T extends object>(
         </table>
       </div>
 
-      {total > pageSize && (
-        <div className="flex justify-end px-5 py-4">
-          <Pagination
-            current={pageIndex + 1}
-            pageSize={pageSize}
-            total={total}
-            onChange={(page) => setPageIndex(page - 1)}
-            showLessItems
-            showTitle={false}
-          />
+      {total > 0 && (
+        <div className="flex justify-between items-center px-5 py-4 border-t border-gray-200">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <span>Show</span>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPageIndex(0);
+              }}
+              className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+            </select>
+            <span>entries</span>
+          </div>
+          
+          {total > pageSize && (
+            <Pagination
+              current={pageIndex + 1}
+              pageSize={pageSize}
+              total={total}
+              onChange={(page) => setPageIndex(page - 1)}
+              showLessItems
+              showTitle={false}
+            />
+          )}
         </div>
       )}
     </div>
