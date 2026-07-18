@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
@@ -14,7 +14,7 @@ import { DeleteBannerApi, GetBannerApi } from "@/Api/banner";
 import { getImageUrl } from "@/lib/imageHelper";
 
 export default function BannerList() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
   const navigate = useRouter();
   const permission = usePermission("Banner");
 

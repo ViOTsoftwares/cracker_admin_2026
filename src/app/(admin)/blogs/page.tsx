@@ -8,6 +8,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
 import ServerSIdeTable, {
   FilterType,
+  ServerSideTableRef,
 } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import { capitalize } from "@/lib/adminFun";
@@ -23,7 +24,7 @@ export interface ColumnMeta {
 }
 
 export default function List() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
 
   const navigate = useRouter();
   const permission = usePermission("All Blogs");

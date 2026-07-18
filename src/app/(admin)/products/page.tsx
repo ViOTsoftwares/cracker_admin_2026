@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Edit, Trash2, Download, Upload, FileDown } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
@@ -14,7 +14,7 @@ import { DeleteProductApi, GetProductApi, ExportProductsApi, ImportProductsApi }
 import { getImageUrl } from "@/lib/imageHelper";
 
 export default function List() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const navigate = useRouter();

@@ -3,7 +3,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { toastMessage } from "@/lib/toast.message";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
@@ -11,7 +11,7 @@ import { GetOrdersApi, UpdateOrderStatusApi, ExportOrdersApi } from "@/Api/order
 import { Edit, Download } from "lucide-react";
 
 export default function OrderList() {
-  const tableRef = useRef<{ reload: () => void; getFilters: () => Record<string, any> }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
   const permission = usePermission("Orders");
   const [isExporting, setIsExporting] = useState(false);
 

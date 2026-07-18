@@ -7,7 +7,7 @@ import { Edit, Plus, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 
 import Breadcrumbs from "@/components/Breadcrumbs";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import { usePermission } from "@/hooks/usePermission";
 import { toastMessage } from "@/lib/toast.message";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/Api/emailTemplate";
 
 export default function EmailTemplateList() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
   const navigate = useRouter();
   const permission = usePermission("Email Templates");
 

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import { capitalize } from "@/lib/adminFun";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -14,7 +14,7 @@ import { usePermission } from "@/hooks/usePermission";
 import { DeleteTestimoalApi, GetTestimoalApi } from "@/Api/testimonial";
 
 export default function List() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
   const navigate = useRouter();
   const permission = usePermission("All Testimonial");
   const columns = useMemo<ColumnDef<any>[]>(() => {

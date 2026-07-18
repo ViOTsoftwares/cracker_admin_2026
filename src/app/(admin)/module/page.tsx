@@ -4,13 +4,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { usePathname, useRouter } from "next/navigation";
 import { Edit, Trash2 } from "lucide-react";
 import { toastMessage } from "@/lib/toast.message";
-import ServerSIdeTable from "@/components/GlobalTable/ServerSIdeTable";
+import ServerSIdeTable, { ServerSideTableRef } from "@/components/GlobalTable/ServerSIdeTable";
 import Swal from "sweetalert2";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { usePermission } from "@/hooks/usePermission";
 import { DeleteModuleApi, GetModuleApi } from "@/Api/module";
 export default function List() {
-  const tableRef = useRef<{ reload: () => void }>(null);
+  const tableRef = useRef<ServerSideTableRef>(null);
   const navigate = useRouter();
   const permission = usePermission("Modules");
   const columns = useMemo<ColumnDef<any>[]>(() => {
