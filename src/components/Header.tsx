@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import ProfileMenu from "./ProfileMenu";
+import NotificationMenu from "./NotificationMenu";
 import { useSidebar } from "@/context/SidebarContext";
 import { Menu, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -67,6 +68,7 @@ export default function Header() {
 
       {/* Profile menu dropdown on the right */}
       <div className="flex items-center gap-4">
+        <NotificationMenu />
         <ProfileMenu />
       </div>
     </header>

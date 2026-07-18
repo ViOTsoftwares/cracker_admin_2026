@@ -32,7 +32,7 @@ export const ExportOrdersApi = async (filter: any = {}) => {
   }
 };
 
-export const UpdateOrderStatusApi = async (id: string, payload: { orderStatus?: string; paymentStatus?: string }) => {
+export const UpdateOrderStatusApi = async (id: string, payload: { orderStatus?: string; paymentStatus?: string; isRead?: boolean }) => {
   try {
     const { data } = await baseApi.put(`/orders/${id}/status`, payload, {
       withCredentials: true,

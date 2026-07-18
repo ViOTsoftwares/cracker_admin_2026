@@ -44,6 +44,7 @@ interface ServerSideTableProps<T extends object> {
     pageSize: number;
     filter: Record<string, any>;
   }) => Promise<{ data: T[]; total: number }>;
+  rowClassName?: (row: T) => string;
 }
 
 export interface ServerSideTableRef {
@@ -53,7 +54,7 @@ export interface ServerSideTableRef {
 
 /* ===================== COMPONENT ===================== */
 function ServerSideTableInner<T extends object>(
-  { columns, fetchApi }: ServerSideTableProps<T>,
+  { columns, fetchApi, rowClassName }: ServerSideTableProps<T>,
   ref: React.Ref<ServerSideTableRef>,
 ) {
   const [data, setData] = useState<T[]>([]);
@@ -265,7 +266,7 @@ function ServerSideTableInner<T extends object>(
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
+                <tr key={row.id} className={rowClassName ? rowClassName(row.original) : ""}>
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-5 py-4 text-sm">
                       {flexRender(

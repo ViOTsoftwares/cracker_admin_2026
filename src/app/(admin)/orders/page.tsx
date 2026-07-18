@@ -15,6 +15,17 @@ export default function OrderList() {
   const permission = usePermission("Orders");
   const [isExporting, setIsExporting] = useState(false);
 
+  const handleMarkAsRead = async (order: any) => {
+    try {
+      const res = await UpdateOrderStatusApi(order._id, { isRead: true });
+      if (res.success) {
+        tableRef.current?.reload();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleExport = async () => {
     try {
       setIsExporting(true);
@@ -105,6 +116,13 @@ export default function OrderList() {
       return;
     }
 
+    // Mark as read automatically when opened
+    if (!order.isRead) {
+      UpdateOrderStatusApi(order._id, { isRead: true }).then(() => {
+        tableRef.current?.reload();
+      }).catch(console.error);
+    }
+
     const { value: formValues } = await Swal.fire({
       title: `<span class="text-lg font-bold text-slate-800">Update Order #${order.orderId}</span>`,
       html: `
@@ -163,21 +181,29 @@ export default function OrderList() {
         accessorKey: "orderId",
         header: "Order ID",
         meta: { filterType: "text" },
-        cell: (info) => <span className="font-mono font-semibold text-slate-700">{info.getValue<string>()}</span>,
+        cell: (info) => {
+          const isRead = info.row.original?.isRead;
+          return (
+            <div className="flex items-center gap-2">
+              <span className={`font-mono ${!isRead ? "font-semibold text-gray-900" : "font-medium text-slate-700"}`}>{info.getValue<string>()}</span>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "createdAt",
         header: "Date",
         meta: { filterType: "date" },
         cell: (info) => {
+          const isRead = info.row.original?.isRead;
           const val = info.getValue<string>();
-          return val ? new Date(val).toLocaleDateString("en-IN", {
+          return <span className={`${!isRead ? "font-semibold text-gray-900" : ""}`}>{val ? new Date(val).toLocaleDateString("en-IN", {
             day: "numeric",
             month: "short",
             year: "numeric",
             hour: "2-digit",
             minute: "2-digit",
-          }) : "-";
+          }) : "-"}</span>;
         },
       },
       {
@@ -186,11 +212,12 @@ export default function OrderList() {
         meta: { filterType: "text" },
         cell: ({ row }) => {
           const u = row.original?.user;
+          const isRead = row.original?.isRead;
           return u ? (
             <div className="flex flex-col">
-              <span className="font-semibold text-gray-900">{u.name}</span>
-              <span className="text-xs text-gray-500">{u.email}</span>
-              <span className="text-xs text-gray-400">{u.phone}</span>
+              <span className={`${!isRead ? "font-bold text-gray-900" : "font-semibold text-gray-900"}`}>{u.name}</span>
+              <span className={`text-xs ${!isRead ? "font-semibold text-gray-800" : "text-gray-500"}`}>{u.email}</span>
+              <span className={`text-xs ${!isRead ? "font-semibold text-gray-700" : "text-gray-400"}`}>{u.phone}</span>
             </div>
           ) : (
             <span className="text-gray-400">Guest</span>
@@ -201,13 +228,19 @@ export default function OrderList() {
         accessorKey: "shippingAddress.city",
         header: "City",
         meta: { filterType: "text" },
-        cell: (info) => <span className="text-gray-700 font-medium">{info.getValue<string>() || "-"}</span>,
+        cell: (info) => {
+          const isRead = info.row.original?.isRead;
+          return <span className={`${!isRead ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>{info.getValue<string>() || "-"}</span>;
+        }
       },
       {
         accessorKey: "shippingAddress.phone",
         header: "Phone",
         meta: { filterType: "text" },
-        cell: (info) => <span className="text-gray-700 font-medium">{info.getValue<string>() || "-"}</span>,
+        cell: (info) => {
+          const isRead = info.row.original?.isRead;
+          return <span className={`${!isRead ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>{info.getValue<string>() || "-"}</span>;
+        }
       },
       {
         id: "items",
@@ -215,12 +248,13 @@ export default function OrderList() {
         enableColumnFilter: false,
         cell: ({ row }) => {
           const items = row.original?.items || [];
+          const isRead = row.original?.isRead;
           return (
             <div className="flex flex-col gap-1 max-w-xs">
               {items.map((item: any, idx: number) => (
-                <div key={idx} className="text-xs text-gray-700 flex justify-between gap-4">
+                <div key={idx} className={`text-xs flex justify-between gap-4 ${!isRead ? "font-semibold text-gray-900" : "text-gray-700"}`}>
                   <span className="truncate">{item.product?.name || "Product"}</span>
-                  <span className="font-semibold shrink-0">x{item.quantity}</span>
+                  <span className="shrink-0">x{item.quantity}</span>
                 </div>
               ))}
             </div>
@@ -231,7 +265,10 @@ export default function OrderList() {
         accessorKey: "total",
         header: "Total (₹)",
         enableColumnFilter: false,
-        cell: (info) => <span className="font-bold text-gray-900">₹{info.getValue<number>().toLocaleString("en-IN")}</span>,
+        cell: (info) => {
+          const isRead = info.row.original?.isRead;
+          return <span className={`${!isRead ? "font-bold text-gray-900" : "font-semibold text-gray-700"}`}>₹{info.getValue<number>().toLocaleString("en-IN")}</span>;
+        }
       },
       {
         id: "payment",
@@ -379,7 +416,12 @@ export default function OrderList() {
 
       <div className="h-px bg-gray-200" />
 
-      <ServerSIdeTable ref={tableRef} columns={columns} fetchApi={fetchData} />
+      <ServerSIdeTable 
+        ref={tableRef} 
+        columns={columns} 
+        fetchApi={fetchData} 
+        rowClassName={(row: any) => !row.isRead ? "bg-indigo-50/40 border-l-2 border-indigo-500" : ""}
+      />
     </div>
   );
 }
