@@ -122,19 +122,18 @@ export default function NotificationMenu() {
 
           {/* Notification List */}
           <div className="max-h-[350px] overflow-y-auto">
-            {notifications.length === 0 ? (
+            {notifications.filter((n) => !n.isRead).length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
                 <Bell className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-                No notifications yet
+                No new notifications
               </div>
             ) : (
               <div className="divide-y divide-slate-100 dark:divide-slate-800/50">
-                {notifications.map((notification) => (
+                {notifications.filter((n) => !n.isRead).map((notification) => (
                   <div
                     key={notification._id}
-                    className={`flex items-start gap-3 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
-                      !notification.isRead ? "bg-indigo-50/30 dark:bg-indigo-900/10" : ""
-                    }`}
+                    onClick={() => handleMarkAsRead(notification._id, notification.data?.orderId)}
+                    className="flex items-start gap-3 p-4 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50 bg-indigo-50/30 dark:bg-indigo-900/10 cursor-pointer"
                   >
                     <div className="shrink-0 mt-1">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -147,7 +146,7 @@ export default function NotificationMenu() {
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium text-slate-900 dark:text-slate-100 ${!notification.isRead ? 'font-semibold' : ''}`}>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {notification.title}
                       </p>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
@@ -157,18 +156,6 @@ export default function NotificationMenu() {
                         {new Date(notification.createdAt).toLocaleString()}
                       </p>
                     </div>
-
-                    {!notification.isRead && (
-                      <div className="shrink-0">
-                        <button
-                          onClick={() => handleMarkAsRead(notification._id, notification.data?.orderId)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-full transition-colors cursor-pointer"
-                          title="Mark as read & view"
-                        >
-                          <Check className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
