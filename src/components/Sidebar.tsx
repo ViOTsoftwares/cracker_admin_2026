@@ -14,6 +14,7 @@ import {
   Mail,
   ShieldCheck,
   ClipboardList,
+  Users,
 } from "lucide-react";
 
 // Map router icon string values to Lucide Icons dynamically
@@ -25,6 +26,7 @@ export const iconMap: Record<string, React.ComponentType<{ className?: string }>
   Mail,
   ShieldCheck,
   ClipboardList,
+  Users,
 };
 
 export default function Sidebar() {
