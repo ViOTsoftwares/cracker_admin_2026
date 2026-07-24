@@ -8,6 +8,7 @@ import { toastMessage } from "@/lib/toast.message";
 import { ChangePasswordApi } from "@/Api/auth";
 import { useRouter } from "next/navigation";
 import { handleLogout } from "@/lib/adminFun";
+import { Eye, EyeOff } from "lucide-react";
 interface ChangePasswordForm {
   currentPassword: string;
   newPassword: string;
@@ -103,7 +104,7 @@ export default function ChangePasswordPage() {
                 className="eye-btn"
                 onClick={() => setShow({ ...show, current: !show.current })}
               >
-                {show.current ? "🙈" : "👁️"}
+                {show.current ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
             </div>
             {errors.currentPassword && (
@@ -125,7 +126,7 @@ export default function ChangePasswordPage() {
                 className="eye-btn"
                 onClick={() => setShow({ ...show, new: !show.new })}
               >
-                {show.new ? "🙈" : "👁️"}
+                {show.new ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
             </div>
             {errors.newPassword && (
@@ -147,7 +148,7 @@ export default function ChangePasswordPage() {
                 className="eye-btn"
                 onClick={() => setShow({ ...show, confirm: !show.confirm })}
               >
-                {show.confirm ? "🙈" : "👁️"}
+                {show.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
               </div>
             </div>
             {errors.confirmPassword && (

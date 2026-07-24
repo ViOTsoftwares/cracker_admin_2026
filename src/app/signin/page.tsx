@@ -9,6 +9,7 @@ import { menuList } from "@/Router";
 import { toastMessage } from "@/lib/toast.message";
 import { useRouter } from "next/navigation";
 import { isEmpty } from "@/lib/isEmpty";
+import { Eye, EyeOff } from "lucide-react";
 interface LoginFormValues {
   email: string;
   password: string;
@@ -159,7 +160,7 @@ export default function SignIn() {
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? <EyeOff size={20} color="black" /> : <Eye size={20} color="black" />}
               </div>
             </div>
           </div>
