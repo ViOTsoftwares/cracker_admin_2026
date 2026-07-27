@@ -11,6 +11,7 @@ export const handleLogout = async (navigate: any) => {
       document.cookie = "adminRestriction=; path=/; max-age=0";
       document.cookie = "adminRole=; path=/; max-age=0";
       document.cookie = "adminToken=; path=/; max-age=0";
+      document.cookie = "adminPermPaths=; path=/; max-age=0";
       setTimeout(() => {
         navigate.push("/signin");
       }, 500);

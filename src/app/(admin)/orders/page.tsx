@@ -128,21 +128,12 @@ export default function OrderList() {
       html: `
         <div style="text-align: left; font-family: inherit;" class="space-y-4 px-2">
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Order Status</label>
-            <select id="swal-order-status" class="w-full rounded-lg border border-gray-300 p-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-              <option value="pending" ${order.orderStatus === "pending" ? "selected" : ""}>Pending</option>
-              <option value="processing" ${order.orderStatus === "processing" ? "selected" : ""}>Processing</option>
-              <option value="shipped" ${order.orderStatus === "shipped" ? "selected" : ""}>Shipped</option>
-              <option value="delivered" ${order.orderStatus === "delivered" ? "selected" : ""}>Delivered</option>
-              <option value="cancelled" ${order.orderStatus === "cancelled" ? "selected" : ""}>Cancelled</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1 font-sans">Payment Status</label>
-            <select id="swal-payment-status" class="w-full rounded-lg border border-gray-300 p-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-              <option value="pending" ${order.paymentStatus === "pending" ? "selected" : ""}>Pending</option>
-              <option value="paid" ${order.paymentStatus === "paid" ? "selected" : ""}>Paid</option>
-              <option value="failed" ${order.paymentStatus === "failed" ? "selected" : ""}>Failed</option>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Status</label>
+            <select id="swal-unified-status" class="w-full rounded-lg border border-gray-300 p-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+              <option value="pending|pending" ${order.orderStatus === "pending" && order.paymentStatus !== "paid" ? "selected" : ""}>Pending</option>
+              <option value="processing|paid" ${order.paymentStatus === "paid" && order.orderStatus !== "delivered" ? "selected" : ""}>Paid</option>
+              <option value="delivered|paid" ${order.orderStatus === "delivered" ? "selected" : ""}>Delivery</option>
+              <option value="cancelled|pending" ${order.orderStatus === "cancelled" ? "selected" : ""}>Cancel</option>
             </select>
           </div>
         </div>
@@ -153,8 +144,8 @@ export default function OrderList() {
       confirmButtonColor: "#0f172a",
       cancelButtonText: "Cancel",
       preConfirm: () => {
-        const orderStatus = (document.getElementById("swal-order-status") as HTMLSelectElement).value;
-        const paymentStatus = (document.getElementById("swal-payment-status") as HTMLSelectElement).value;
+        const val = (document.getElementById("swal-unified-status") as HTMLSelectElement).value;
+        const [orderStatus, paymentStatus] = val.split("|");
         return { orderStatus, paymentStatus };
       },
     });
@@ -184,8 +175,8 @@ export default function OrderList() {
         cell: (info) => {
           const isRead = info.row.original?.isRead;
           return (
-            <div className="flex items-center gap-2">
-              <span className={`font-mono ${!isRead ? "font-semibold text-gray-900" : "font-medium text-slate-700"}`}>{info.getValue<string>()}</span>
+            <div className="flex flex-col">
+              <span className={`font-mono ${!isRead ? "font-semibold text-gray-900 w-25" : "font-medium text-slate-700 w-25"}`}>{info.getValue<string>()}</span>
             </div>
           );
         },
@@ -283,7 +274,7 @@ export default function OrderList() {
 
           return (
             <div className="flex flex-col gap-1 items-start">
-              <span className="text-xs uppercase font-semibold text-slate-600">{method}</span>
+              {/* <span className="text-xs uppercase font-semibold text-slate-600">{method}</span> */}
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${statusColor}`}>{status}</span>
             </div>
           );
@@ -416,10 +407,10 @@ export default function OrderList() {
 
       <div className="h-px bg-gray-200" />
 
-      <ServerSIdeTable 
-        ref={tableRef} 
-        columns={columns} 
-        fetchApi={fetchData} 
+      <ServerSIdeTable
+        ref={tableRef}
+        columns={columns}
+        fetchApi={fetchData}
         rowClassName={(row: any) => !row.isRead ? "bg-indigo-50/40 border-l-2 border-indigo-500" : ""}
       />
     </div>
