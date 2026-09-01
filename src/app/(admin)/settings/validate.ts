@@ -8,6 +8,7 @@ interface SettingsPayload {
   phone: string;
   email: string;
   logo: File | null;
+  favicon?: File | null;
   linkedinlink?: string;
   xlink?: string;
   instagramlink?: string;
@@ -33,6 +34,7 @@ export const validation = (
     phone,
     email,
     logo,
+    favicon,
     linkedinlink,
     xlink,
     instagramlink,
@@ -66,6 +68,17 @@ export const validation = (
       err.logo = "Only PNG, JPG, or WEBP images allowed";
     } else if (logo.size > maxSize) {
       err.logo = "Logo must be smaller than 2MB";
+    }
+  }
+
+  if (favicon instanceof File) {
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp", "image/x-icon", "image/vnd.microsoft.icon"];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!allowedTypes.includes(favicon.type)) {
+      err.favicon = "Only PNG, JPG, WEBP or ICO images allowed";
+    } else if (favicon.size > maxSize) {
+      err.favicon = "Favicon must be smaller than 2MB";
     }
   }
 

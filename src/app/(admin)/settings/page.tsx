@@ -31,6 +31,7 @@ const SettingsPage = () => {
     deliveryFee: 0,
     deliveryFeeType: "free",
     logo: null as File | null,
+    favicon: null as File | null,
     footerShopLinks: [] as { label: string; link: string }[],
   });
   const {
@@ -38,6 +39,7 @@ const SettingsPage = () => {
     client,
     email,
     logo,
+    favicon,
     phone,
     project,
     title,
@@ -51,6 +53,7 @@ const SettingsPage = () => {
     footerShopLinks,
   } = formValues;
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<{label: string, slug: string}[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -65,8 +68,9 @@ const SettingsPage = () => {
   React.useEffect(() => {
     return () => {
       revokeIfBlobUrl(logoPreview);
+      revokeIfBlobUrl(faviconPreview);
     };
-  }, [logoPreview]);
+  }, [logoPreview, faviconPreview]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -85,6 +89,16 @@ const SettingsPage = () => {
 
     setFormValues((pre) => ({ ...pre, logo: file }));
     setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const handleFaviconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    revokeIfBlobUrl(faviconPreview);
+
+    setFormValues((pre) => ({ ...pre, favicon: file }));
+    setFaviconPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -120,6 +134,9 @@ const SettingsPage = () => {
       fs.append("footerShopLinks", JSON.stringify(footerShopLinks));
       if (logo instanceof File) {
         fs.append("logo", logo);
+      }
+      if (favicon instanceof File) {
+        fs.append("favicon", favicon);
       }
       const response = await UpdateSettingApi(fs);
       if (response.success) {
@@ -157,10 +174,12 @@ const SettingsPage = () => {
       setLoading(true);
       const response = await GetSettingApi();
       setLogoPreview(response?.result?.logo);
+      setFaviconPreview(response?.result?.favicon || "default-favicon.png");
       setFormValues({
         ...response?.result,
         id: response?.result._id,
         logo: null,
+        favicon: null,
         footerShopLinks: response?.result.footerShopLinks || [],
       });
     } catch (error) {
@@ -252,6 +271,13 @@ const SettingsPage = () => {
           folder="logos"
           error={errors.logo}
           onChange={handleLogoChange}
+        />
+        <FileField
+          label="Favicon (Browser Tab Icon)"
+          preview={faviconPreview}
+          folder="logos"
+          error={errors.favicon}
+          onChange={handleFaviconChange}
         />
         <InputField
           label="X link"

@@ -9,11 +9,13 @@ import { menuList } from "@/Router";
 import { toastMessage } from "@/lib/toast.message";
 import { useRouter } from "next/navigation";
 import { isEmpty } from "@/lib/isEmpty";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Flame } from "lucide-react";
+
 interface LoginFormValues {
   email: string;
   password: string;
 }
+
 export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +28,6 @@ export default function SignIn() {
     password: "",
   });
   const { email, password } = formValues;
-  const navigate = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -44,12 +45,11 @@ export default function SignIn() {
       e.preventDefault();
       setLoading(true);
       const err = Validation(formValues);
-      console.log("----", err);
       if (!isEmpty(err)) {
         setErrors(err);
+        setLoading(false);
         return;
       }
-      console.log(formValues);
       const response = await LoginApi(formValues);
       if (response.success) {
         toastMessage(response.message, "success");
@@ -59,7 +59,7 @@ export default function SignIn() {
           const me = await GetMeApi();
           if (me?.success) {
             const restrictions = encodeURIComponent(
-              JSON.stringify(me.result?.restriction || []),
+              JSON.stringify(me.result?.restriction || [])
             );
             const role = encodeURIComponent(me.result?.role || "");
             document.cookie = `adminRestriction=${restrictions}; path=/; max-age=${60 * 60 * 24}`;
@@ -100,14 +100,13 @@ export default function SignIn() {
             });
 
             const permPathsCookie = encodeURIComponent(
-              JSON.stringify(permPaths),
+              JSON.stringify(permPaths)
             );
             document.cookie = `adminPermPaths=${permPathsCookie}; path=/; max-age=${60 * 60 * 24}`;
           }
         } catch (err) {
           console.log(err);
         }
-        // navigate.push("/");
         window.location.href = "/";
       } else {
         toastMessage(response.message, "error");
@@ -125,7 +124,23 @@ export default function SignIn() {
       <div className="signin-card">
         {/* Header */}
         <div className="signin-header">
-          <h1>Admin Sign In</h1>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+            <div
+              style={{
+                width: "52px",
+                height: "52px",
+                borderRadius: "50%",
+                background: "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 8px 20px -6px rgba(249, 115, 22, 0.5)",
+              }}
+            >
+              <Flame size={26} color="#fff" />
+            </div>
+          </div>
+          <h1>Admin Portal</h1>
           <p>Welcome back, please login to your account</p>
         </div>
 
@@ -139,7 +154,7 @@ export default function SignIn() {
               onChange={handleChange}
               placeholder="Enter email"
             />
-            {errors && <p>{errors.email}</p>}
+            {errors?.email && <p>{errors.email}</p>}
           </div>
 
           {/* Password with Eye */}
@@ -164,7 +179,7 @@ export default function SignIn() {
               </div>
             </div>
           </div>
-          {errors && <p>{errors.password}</p>}
+          {errors?.password && <p>{errors.password}</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign In"}
