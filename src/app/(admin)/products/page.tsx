@@ -116,60 +116,62 @@ export default function List() {
     }
   };
 
-  const splitCSVLine = (line: string): string[] => {
-    const result: string[] = [];
-    let currentVal = "";
-    let insideQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      if (char === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (char === ',' && !insideQuotes) {
-        result.push(currentVal);
-        currentVal = "";
-      } else {
-        currentVal += char;
-      }
-    }
-    result.push(currentVal);
-    return result;
-  };
-
   const parseCSV = (text: string): any[] => {
-    const lines: string[] = [];
-    let currentLine = "";
+    const rows: string[][] = [];
+    let currentRow: string[] = [];
+    let currentField = "";
     let insideQuotes = false;
 
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
       const nextChar = text[i + 1];
 
-      if (char === '"') {
-        insideQuotes = !insideQuotes;
-      } else if (char === '\r' || char === '\n') {
-        if (insideQuotes) {
-          currentLine += char;
-        } else {
-          if (char === '\r' && nextChar === '\n') {
-            i++; // skip next \n
+      if (insideQuotes) {
+        if (char === '"') {
+          if (nextChar === '"') {
+            // Escaped quote: "" -> "
+            currentField += '"';
+            i++;
+          } else {
+            insideQuotes = false;
           }
-          lines.push(currentLine);
-          currentLine = "";
+        } else {
+          currentField += char;
         }
       } else {
-        currentLine += char;
+        if (char === '"') {
+          insideQuotes = true;
+        } else if (char === ',') {
+          currentRow.push(currentField);
+          currentField = "";
+        } else if (char === '\r' || char === '\n') {
+          currentRow.push(currentField);
+          currentField = "";
+          if (currentRow.length > 1 || (currentRow.length === 1 && currentRow[0].trim() !== "")) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          if (char === '\r' && nextChar === '\n') {
+            i++;
+          }
+        } else {
+          currentField += char;
+        }
       }
     }
-    if (currentLine) {
-      lines.push(currentLine);
+
+    if (currentField || currentRow.length > 0) {
+      currentRow.push(currentField);
+      if (currentRow.length > 1 || (currentRow.length === 1 && currentRow[0].trim() !== "")) {
+        rows.push(currentRow);
+      }
     }
 
-    if (lines.length === 0) return [];
+    if (rows.length === 0) return [];
 
-    const rawHeaders = splitCSVLine(lines[0]);
+    const rawHeaders = rows[0];
     const headers = rawHeaders.map(h => h.trim().toLowerCase().replace(/[\s_]+/g, ''));
 
-    const result: any[] = [];
     const headerMap: Record<string, string> = {
       name: "name",
       slug: "slug",
@@ -188,11 +190,11 @@ export default function List() {
       is_featured: "isFeatured",
     };
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
+    const result: any[] = [];
+    for (let r = 1; r < rows.length; r++) {
+      const values = rows[r];
+      if (values.every(v => !v.trim())) continue;
 
-      const values = splitCSVLine(line);
       const obj: any = {};
       headers.forEach((h, index) => {
         const field = headerMap[h] || h;

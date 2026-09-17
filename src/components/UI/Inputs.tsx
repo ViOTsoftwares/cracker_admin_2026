@@ -65,12 +65,14 @@ export const FileField = ({
   preview,
   folder,
   onChange,
+  onCropClick,
 }: {
   label: string;
   error?: string;
   preview?: string | null;
   folder?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onCropClick?: () => void;
 }) => (
   <div className="space-y-2">
     <label className="block text-sm font-medium text-gray-700">{label}</label>
@@ -81,17 +83,28 @@ export const FileField = ({
       onChange={onChange}
       className="block w-full text-sm
         file:mr-4 file:rounded-md file:border-0
-        file:bg-blue-600 file:px-4 file:py-2
-        file:text-white hover:file:bg-blue-700"
+        file:bg-red-900 file:px-4 file:py-2
+        file:text-white hover:file:bg-red-950 cursor-pointer"
     />
     {preview && (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mt-2">
         <img
           src={getImageUrl(preview, folder)}
-          alt="Logo preview"
-          className="h-16 w-16 rounded-lg border object-contain bg-gray-50"
+          alt="Preview"
+          className="h-16 w-32 rounded-lg border object-cover bg-gray-50 shadow-xs"
         />
-        <span className="text-xs text-gray-500">Preview</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-gray-500 font-medium">Image Preview</span>
+          {onCropClick && (
+            <button
+              type="button"
+              onClick={onCropClick}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[#9e0d0d] hover:text-[#7c0a0a] hover:underline cursor-pointer"
+            >
+              ✂️ Crop / Adjust Image
+            </button>
+          )}
+        </div>
       </div>
     )}
 

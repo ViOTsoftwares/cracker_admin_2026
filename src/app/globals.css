@@ -82,7 +82,7 @@
   top: 50%;
   width: 3px;
   height: 0;
-  background: linear-gradient(180deg, #3b82f6, #6366f1);
+  background: linear-gradient(180deg, #9e0d0d, #d4af37);
   border-radius: 2px;
   transform: translateY(-50%);
   transition: height 0.25s ease;
@@ -96,8 +96,8 @@
 
 /* Active menu */
 .menu-btn.active {
-  background: rgba(59, 130, 246, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.25);
+  background: rgba(158, 13, 13, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.35);
 }
 
 .menu-btn.active::before {
@@ -142,7 +142,7 @@
   border-radius: 8px;
 
   font-size: 14px;
-  color: #c7d2fe;
+  color: #fca5a5;
   text-decoration: none;
 
   transition:
@@ -159,7 +159,7 @@
   top: 50%;
   width: 6px;
   height: 6px;
-  background: #6366f1;
+  background: #d4af37;
   border-radius: 50%;
   transform: translateY(-50%) scale(0.6);
   opacity: 0;
@@ -176,7 +176,7 @@
 
 /* Active submenu */
 .submenu-item.active {
-  background: rgba(99, 102, 241, 0.18);
+  background: rgba(158, 13, 13, 0.25);
   color: #fff;
 }
 
@@ -188,7 +188,7 @@
 
 .signin-wrapper {
   height: 100vh;
-  background: radial-gradient(circle at top, #1e293b, #020617);
+  background: radial-gradient(circle at top, #260707, #0f0202);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,7 +247,7 @@
 }
 
 .signin-form input:focus {
-  border-color: #6366f1;
+  border-color: #d4af37;
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -256,7 +256,7 @@
   margin-top: 10px;
   padding: 12px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, #b21818, #8b0000);
   border: none;
   color: #fff;
   font-size: 15px;
@@ -269,7 +269,7 @@
 
 .signin-form button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 12px 30px rgba(158, 13, 13, 0.4);
 }
 
 .signin-form button:disabled {
@@ -419,8 +419,8 @@
 
 /* Active page */
 .rc-pagination-item-active {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: #9e0d0d;
+  border-color: #9e0d0d;
 }
 
 .rc-pagination-item-active a {

@@ -83,7 +83,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-slate-900 text-slate-100 border-r border-slate-800 transition-all duration-300 ease-in-out
+      className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-[#1f0505] text-slate-100 border-r border-red-950/40 transition-all duration-300 ease-in-out
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0
         ${isCollapsed ? "lg:w-20" : "lg:w-64"}
@@ -91,20 +91,20 @@ export default function Sidebar() {
     >
       {/* Sidebar Header / Logo */}
       <div
-        className={`flex items-center justify-between h-16 px-6 border-b border-slate-800 shrink-0 ${
+        className={`flex items-center justify-between h-16 px-6 border-b border-red-950/40 shrink-0 ${
           isCollapsed ? "lg:justify-center lg:px-0" : ""
         }`}
       >
         {!isCollapsed ? (
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent tracking-wide hidden lg:block">
+          <span className="text-xl font-bold bg-gradient-to-r from-amber-300 via-yellow-400 to-red-500 bg-clip-text text-transparent tracking-wide hidden lg:block">
             {siteTitle}
           </span>
         ) : (
-          <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent lg:block hidden">
+          <span className="text-xl font-bold bg-gradient-to-r from-amber-300 via-yellow-400 to-red-500 bg-clip-text text-transparent lg:block hidden">
             {initials}
           </span>
         )}
-        <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent block lg:hidden">
+        <span className="text-xl font-bold bg-gradient-to-r from-amber-300 via-yellow-400 to-red-500 bg-clip-text text-transparent block lg:hidden">
           {siteTitle}
         </span>
       </div>

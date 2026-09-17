@@ -9,6 +9,22 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { OneBannerApi, UpdateBannerApi } from "@/Api/banner";
 import CardContainer from "@/components/CardContainer";
+import ImageCropModal from "@/components/ImageCropModal";
+import { getImageUrl } from "@/lib/imageHelper";
+
+const DESKTOP_ASPECTS = [
+  { label: "Desktop Widescreen (16:5)", value: 16 / 5 },
+  { label: "Ultra Wide (3:1)", value: 3 / 1 },
+  { label: "16:9 Standard", value: 16 / 9 },
+  { label: "Free Crop", value: 0 },
+];
+
+const MOBILE_ASPECTS = [
+  { label: "Mobile Banner (4:3)", value: 4 / 3 },
+  { label: "Square (1:1)", value: 1 / 1 },
+  { label: "Portrait (4:5)", value: 4 / 5 },
+  { label: "Free Crop", value: 0 },
+];
 
 const UpdateBannerPage = () => {
   const [formValues, setFormValues] = useState({
@@ -28,6 +44,14 @@ const UpdateBannerPage = () => {
 
   const [desktopPreview, setDesktopPreview] = useState<string | null>(null);
   const [mobilePreview, setMobilePreview] = useState<string | null>(null);
+
+  // Cropper states
+  const [rawDesktopSrc, setRawDesktopSrc] = useState<string | null>(null);
+  const [isDesktopCropOpen, setIsDesktopCropOpen] = useState(false);
+
+  const [rawMobileSrc, setRawMobileSrc] = useState<string | null>(null);
+  const [isMobileCropOpen, setIsMobileCropOpen] = useState(false);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
@@ -36,16 +60,22 @@ const UpdateBannerPage = () => {
       if (desktopPreview && desktopPreview.startsWith("blob:")) {
         URL.revokeObjectURL(desktopPreview);
       }
+      if (rawDesktopSrc && rawDesktopSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(rawDesktopSrc);
+      }
     };
-  }, [desktopPreview]);
+  }, [desktopPreview, rawDesktopSrc]);
 
   useEffect(() => {
     return () => {
       if (mobilePreview && mobilePreview.startsWith("blob:")) {
         URL.revokeObjectURL(mobilePreview);
       }
+      if (rawMobileSrc && rawMobileSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(rawMobileSrc);
+      }
     };
-  }, [mobilePreview]);
+  }, [mobilePreview, rawMobileSrc]);
 
   const GetOneBanner = async () => {
     try {
@@ -83,24 +113,46 @@ const UpdateBannerPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (desktopPreview && desktopPreview.startsWith("blob:")) {
-      URL.revokeObjectURL(desktopPreview);
-    }
-
-    setFormValues((prev) => ({ ...prev, desktopImage: file }));
-    setDesktopPreview(URL.createObjectURL(file));
+    const objectUrl = URL.createObjectURL(file);
+    setRawDesktopSrc(objectUrl);
+    setIsDesktopCropOpen(true);
   };
 
   const handleMobileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (mobilePreview && mobilePreview.startsWith("blob:")) {
-      URL.revokeObjectURL(mobilePreview);
-    }
+    const objectUrl = URL.createObjectURL(file);
+    setRawMobileSrc(objectUrl);
+    setIsMobileCropOpen(true);
+  };
 
+  const handleDesktopCropSave = (file: File, previewUrl: string) => {
+    setFormValues((prev) => ({ ...prev, desktopImage: file }));
+    setDesktopPreview(previewUrl);
+    setIsDesktopCropOpen(false);
+  };
+
+  const handleMobileCropSave = (file: File, previewUrl: string) => {
     setFormValues((prev) => ({ ...prev, mobileImage: file }));
-    setMobilePreview(URL.createObjectURL(file));
+    setMobilePreview(previewUrl);
+    setIsMobileCropOpen(false);
+  };
+
+  const openDesktopCropper = () => {
+    const src = rawDesktopSrc || (desktopPreview ? getImageUrl(desktopPreview, "banners") : null);
+    if (src) {
+      setRawDesktopSrc(src);
+      setIsDesktopCropOpen(true);
+    }
+  };
+
+  const openMobileCropper = () => {
+    const src = rawMobileSrc || (mobilePreview ? getImageUrl(mobilePreview, "banners") : null);
+    if (src) {
+      setRawMobileSrc(src);
+      setIsMobileCropOpen(true);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,7 +211,7 @@ const UpdateBannerPage = () => {
         <div className="border-b px-8 py-6">
           <h1 className="text-2xl font-semibold text-gray-800">Update Banner</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Modify mobile and desktop banner details
+            Modify mobile and desktop banner details with interactive cropper
           </p>
         </div>
 
@@ -210,6 +262,7 @@ const UpdateBannerPage = () => {
               folder="banners"
               error={errors.desktopImage}
               onChange={handleDesktopImageChange}
+              onCropClick={(rawDesktopSrc || desktopPreview) ? openDesktopCropper : undefined}
             />
 
             <FileField
@@ -218,6 +271,7 @@ const UpdateBannerPage = () => {
               folder="banners"
               error={errors.mobileImage}
               onChange={handleMobileImageChange}
+              onCropClick={(rawMobileSrc || mobilePreview) ? openMobileCropper : undefined}
             />
           </div>
 
@@ -225,13 +279,35 @@ const UpdateBannerPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-[#0f172a] px-6 py-2 text-sm font-semibold text-white hover:bg-[#020617] disabled:opacity-60 transition"
+              className="rounded-lg bg-[#9e0d0d] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#7c0a0a] disabled:opacity-60 transition shadow-sm"
             >
               {loading ? "Updating..." : "Update Banner"}
             </button>
           </div>
         </form>
       </div>
+
+      {/* Desktop Cropper Modal */}
+      <ImageCropModal
+        isOpen={isDesktopCropOpen}
+        imageSrc={rawDesktopSrc}
+        title="Crop Desktop Banner"
+        defaultAspect={16 / 5}
+        aspectOptions={DESKTOP_ASPECTS}
+        onCropSave={handleDesktopCropSave}
+        onCancel={() => setIsDesktopCropOpen(false)}
+      />
+
+      {/* Mobile Cropper Modal */}
+      <ImageCropModal
+        isOpen={isMobileCropOpen}
+        imageSrc={rawMobileSrc}
+        title="Crop Mobile Banner"
+        defaultAspect={4 / 3}
+        aspectOptions={MOBILE_ASPECTS}
+        onCropSave={handleMobileCropSave}
+        onCancel={() => setIsMobileCropOpen(false)}
+      />
     </CardContainer>
   );
 };
